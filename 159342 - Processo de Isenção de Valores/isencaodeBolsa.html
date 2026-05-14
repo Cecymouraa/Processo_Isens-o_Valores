@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="/portal/resources/js/jquery/jquery.js"></script>
+    <script src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+    <script src="/style-guide/js/fluig-style-guide.min.js"></script>
+    <script src="/portal/resources/js/mustache/mustache-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://style.fluig.com/css/fluig-style-guide-flat.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="anexos.js"></script>
+    <script type="text/javascript" src="custom.js"></script>
+    <script type="text/javascript" src="custom_valida.js"></script>
+    <script type="text/javascript" src="zoom.js"></script>
+    <script type="text/javascript" src="widget_code_repository.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/webdesk/vcXMLRPC.js"></script>
+
+</head>
+
+<body>
+    <div class="fluig-style-guide">
+        <div class="container-fluid">
+            <form name="form" role="form" autocomplete="off">
+                <input type="hidden" id="WKNumProces" name="WKNumProces" value="">
+
+               
+
+                <div class="page-header">
+                    <header class="main-header clearfix">
+                        <div class="wrapper">
+                            <div class="row">
+                                <div class="col-md-3 text-left"></div>
+                                <div class="col-md-6 title">
+                                    <h1 class="text-center" style="color: #3714FF;">Processo de Isenção de Valores</h1>
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <img class="company-logo imagem-reduzida" src="/widget_code_repository/resources/images/LogoClariens2.png" style="max-width: 150px; height: auto;">
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                </div>
+
+                <div class="panel panel-default" id="dadosColaborador">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Dados do solicitante</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="dataSolicitacao">Data da solicitação</label>
+                                <input type="date" class="form-control" id="dataSolicitacao" name="dataSolicitacao" readonly>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="empresa">Empresa</label>
+                                <input type="text" class="form-control" id="empresa" name="empresa" readonly>
+                                <input type="hidden" id="codColigadaSol" name="codColigadaSol">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="departamento">Departamento</label>
+                                <input type="text" class="form-control" id="departamento" name="departamento" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="nomeCompleto">Nome completo</label>
+                                <input type="text" class="form-control" id="nomeCompleto" name="nomeCompleto" readonly>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">E-mail corporativo</label>
+                                <input type="text" class="form-control" id="email" name="email" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="cargo">Cargo</label>
+                                <input type="text" class="form-control" id="cargo" name="cargo" readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="matricula">Matrícula</label>
+                                <input type="text" class="form-control" id="matricula" name="matricula" readonly>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="telefone" class="obrigatorio">Telefone</label>
+                                <input type="text" class="form-control campoTipoTelefone" id="telefone" name="telefone">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" id="formSolicitacao">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong> Iniciar solicitação </strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-5">
+                                <label for="TipodeSol" class="obrigatorio">Tipo de solicitação</label>
+                                <select class="form-control" id="TipodeSol" name="TipodeSol">
+                                    <option value=""></option>
+                                    <option value="insensaoTaxaVestibular">Isenção de taxa de vestibular</option>
+                                    <option value="solicitacaoBolsaBeneficios">Solicitação de bolsa e benefícios</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" id="painelInsensaoTaxaVestibular">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Isenção de taxa de vestibular</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label>Candidatos</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table tablename="tableCandidato" class="table" nodeletebutton="true" noaddbutton="true">
+                                            <thead>
+                                                <tr><td></td></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-2">
+                                                                <label>&nbsp;</label>
+                                                                <button type="button" class="btn btn-danger form-control btnRemoverCandidato">Excluir</button>
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label class="obrigatorio">Cód. Candidato</label>
+                                                                <input type="zoom" class="form-control" name="codigoCandidato" 
+                                                                 data-zoom="{
+												                              'displayKey':'codigoCandidato',
+												                              'datasetId':'ds_lyceum_candidato',
+												                              'placeholder':' ',
+												                              'filterValues':' ',
+												                              'fields':[
+                                                                                       {
+                                                                                         'field':'codigoCandidato',
+                                                                                         'label':'Código'
+                                                                                        },
+                                                                                        {
+                                                                                          'field':'nomeCompleto',
+                                                                                          'label':'Nome'
+
+                                                                                        },
+                                                                                        {
+                                                                                          'field':'codigoConcurso',
+                                                                                          'label':'Concurso'
+
+                                                                                        }
+													                                ]
+									                                                    }" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label class="obrigatorio">Concurso</label>
+                                                                <input type="zoom" class="form-control" name="concurso" 
+                                                                data-zoom="{
+												                              'displayKey':'codigoConcurso',
+												                              'datasetId':'ds_lyceum_candidato',
+												                              'placeholder':' ',
+												                              'filterValues':' ',
+												                              'fields':[
+                                                                                       {
+                                                                                         'field':'codigoConcurso',
+                                                                                         'label':'Código'
+                                                                                        },
+                                                                                        {
+                                                                                          'field':'nomeCompleto',
+                                                                                          'label':'Nome'
+
+                                                                                        }
+													                                ]
+									                                                    }" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-6">
+                                                                <label class="obrigatorio">Nome Completo</label>
+                                                                <input type="text" class="form-control" name="nomeCompletoCandidato" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn btn-primary" id="btnAdicionarCandidato" onclick="addCandidato('tableCandidato')">Adicionar candidato</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Importação via Excel -->
+
+                        <div class="row" style="margin-bottom: 20px;">
+                            <div class="col-md-6">
+                                <label for="nomeArquivoImportacao">Importar via Excel (.xlsx)</label>
+                                <div class="importacao-excel">
+                                    <input type="file" id="importarExcel" name="importarExcel" accept=".xlsx, .xls">
+                                    <div class="input-group">
+                                        <input type="text" id="nomeArquivoImportacao" name="nomeArquivoImportacao" class="form-control" placeholder="Selecione um arquivo" readonly>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" id="btnSelecionarArquivoExcel">
+                                                <i class="fluigicon fluigicon-folder-open"></i> Selecionar arquivo
+                                            </button>
+                                        </span>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="button" onclick="importarDadosCandidatos()">
+                                                <i class="fluigicon fluigicon-import"></i> Processar
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" id="painelSolicitacaoBolsaBeneficios">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Solicitação de bolsa e benefícios</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                             <div class="form-group col-md-3">
+                                <label for="codCandidatoSolBolsa">Código do candidato</label>
+                                <input type="zoom" class="form-control" id="codCandidatoSolBolsa" name="codCandidatoSolBolsa"
+                                data-zoom="{
+												'displayKey':'codigoCandidato',
+												'datasetId':'ds_lyceum_candidato',
+												'placeholder':' ',
+												'filterValues':' ',
+												'fields':[
+                                                        {
+                                                            'field':'codigoCandidato',
+                                                            'label':'Código'
+                                                        },
+                                                        {
+                                                            'field':'nomeCompleto',
+                                                            'label':'Nome'
+
+                                                        }
+													]
+									                      }" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="nomeAlunoSolBolsa">Nome completo do aluno</label>
+                                <input type="text" class="form-control" id="nomeAlunoSolBolsa" name="nomeAlunoSolBolsa" readonly/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="cpfAluno" class="obrigatorio">CPF do aluno</label>
+                                <input type="text" class="form-control" id="cpfAluno" name="cpfAluno" maxlength="14" inputmode="numeric" placeholder="000.000.000-00" reandoly/>
+                            </div>
+                          
+
+                    
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                 <label for="CandidatotipoSolBolsa">Tipo de bolsa</label>
+                                <input type="text" class="form-control" id="CandidatotipoSolBolsa" name="codCandidatotipoSolBolsa" />
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <label for="tipoPagamento" class="obrigatorio">Tipo de pagamento</label>
+                                 <select class="form-control" id="tipoPagamento" name="tipoPagamento">
+                                    <option value=""></option>
+                                    <option value="pixTipo">Pix</option>
+                                    <option value="contaCorrente">Conta Corrente</option>
+                                    <option value="contaPoupanca">Conta poupança</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="possuiCashback" class="obrigatorio">Possui cashback?</label>
+                                <select class="form-control" id="possuiCashback" name="possuiCashback">
+                                    <option value=""></option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Nao">Não</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="possuiFIES">Possui FIES?</label>
+                                <select class="form-control" id="possuiFIES" name="possuiFIES">
+                                    <option value=""></option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Nao">Não</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="numeroBanco" class="obrigatorio">Nº do banco</label>
+                                <input type="text" class="form-control" id="numeroBanco" name="numeroBanco" maxlength="10" inputmode="numeric">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="banco" class="obrigatorio">Banco</label>
+                                <input type="text" class="form-control" id="banco" name="banco">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="agencia" class="obrigatorio">Agência</label>
+                                <input type="text" class="form-control" id="agencia" name="agencia">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="conta" class="obrigatorio">Conta</label>
+                                <input type="text" class="form-control" id="conta" name="conta">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="contaPix" class="obrigatorio">Pix</label>
+                                <input type="text" class="form-control" id="contaPix" name="contaPix">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label>Anexo da solicitação</label>
+                                <div class="componentAnexo">
+                                    <input type="hidden" class="descAnexo" id="fnAnexoSolicitacaoSolBolsa" name="fnAnexoSolicitacao" value="Anexo_Solicitacao_Beneficio">
+                                    <div class="input-group">
+                                        <input type="text" id="fdAnexoSolicitacaoSolBolsa" name="fdAnexoSolicitacao" class="form-control inputAnexo" placeholder="Selecione um arquivo" readonly>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btnUpFile btn btn-success" data-acao="upload" onclick="anexo(event)"><i class="fluigicon fluigicon-file-upload"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" id="aprovCoordenacaoAluno">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Coordenação de Admissão</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="obrigatorio">Solicitação aprovada?</label> 
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="switch switch-success col-md-6">
+                                            <h5><b>Sim</b></h5>
+                                            <input class="switch-input" id="coordAprovadoSim" name="coordAprovado" type="radio" value="sim">
+                                            <label class="switch-button" for="coordAprovadoSim">Toggle</label>
+                                        </div>
+                                        <div class="switch switch-warning col-md-6">
+                                            <h5><b>Ajustar</b></h5>
+                                            <input class="switch-input" id="coordAprovadoAjuste" name="coordAprovado" type="radio" value="ajustar">
+                                            <label class="switch-button" for="coordAprovadoAjuste">Toggle</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="obsGestor" class="obrigatorio">Observação</label>
+                                <textarea class="form-control" rows="3" name="obsGestor" id="obsGestor"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" id="aprovCoordFin">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Aprovação da Coordenação Financeira</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="obrigatorio">Solicitação aprovada?</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="switch switch-success col-md-6">
+                                            <h5><b>Sim</b></h5>
+                                            <input class="switch-input" id="aprovCoordFinAprovadoSim" name="aprovCoordFinAprovado" type="radio" value="sim">
+                                            <label class="switch-button" for="aprovCoordFinAprovadoSim">Toggle</label>
+                                        </div>
+                                        <div class="switch switch-danger col-md-6">
+                                            <h5><b>Não</b></h5>
+                                            <input class="switch-input" id="aprovCoordFinAprovadoNao" name="aprovCoordFinAprovado" type="radio" value="nao">
+                                            <label class="switch-button" for="aprovCoordFinAprovadoNao">Toggle</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="observacaoContrato" class="obrigatorio">Observação</label>
+                                <textarea class="form-control" rows="3" name="observacaoContrato" id="observacaoContrato"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" id="coordFinanceiraCR">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong> Aprovação Financeiro CR </strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="obrigatorio">Solicitação aprovada?</label>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="switch switch-success col-md-6">
+                                            <h5><b>Sim</b></h5>
+                                            <input class="switch-input" id="coordFinanceiraAprovadoCRSim" name="coordFinanceiraAprovadoCR" type="radio" value="sim">
+                                            <label class="switch-button" for="coordFinanceiraAprovadoCRSim">Toggle</label>
+                                        </div>
+                                        <div class="switch switch-danger col-md-6">
+                                            <h5><b>Não</b></h5>
+                                            <input class="switch-input" id="coordFinanceiraAprovadoCRNao" name="coordFinanceiraAprovadoCR" type="radio" value="nao">
+                                            <label class="switch-button" for="coordFinanceiraAprovadoCRNao">Toggle</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="obsCoordenacaoFinanceira" class="obrigatorio">Observação</label>
+                                <textarea class="form-control" rows="3" name="obsCoordenacaoFinanceira" id="obsCoordenacaoFinanceira"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
